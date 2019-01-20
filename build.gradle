@@ -13,7 +13,7 @@ repositories {
 ext {
     os = org.gradle.internal.os.OperatingSystem.current()
     
-    kglVersion = "0.1.4-dev-1"
+    kglVersion = "0.1.4-dev-2"
 
     lwjglVersion = "3.2.1"
     if (os.isWindows()) {

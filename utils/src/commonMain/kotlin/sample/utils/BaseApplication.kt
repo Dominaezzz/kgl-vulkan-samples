@@ -59,7 +59,7 @@ abstract class BaseApplication : Closeable {
         val extensions = requiredInstanceExtensions!!.asList() + Vk.EXT_DEBUG_REPORT_EXTENSION_NAME + Vk.EXT_DEBUG_UTILS_EXTENSION_NAME
 
         val layers = Instance.layerProperties.map { it.layerName }.toSet()
-        check("VK_LAYER_LUNARG_standard_validation" in layers)
+        check(layers.containsAll(validationLayers.asList()))
 
         instance = Instance.create(validationLayers.asList(), extensions) {
             applicationInfo {

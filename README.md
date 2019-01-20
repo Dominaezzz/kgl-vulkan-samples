@@ -23,3 +23,6 @@ Inspired by examples from [Sascha Willems](https://github.com/SaschaWillems/Vulk
 
 ### [1 - Triangle](triangle/src/commonMain/kotlin/Main.kt)
 Simple render of a colourful triangle. This is as simple as vulkan gets.
+
+### [2 - Buffers](buffers/src/commonMain/kotlin/Main.kt)
+Simple render of a rectangle using a vertex buffer and an index buffer, each updated with a staging buffer.
