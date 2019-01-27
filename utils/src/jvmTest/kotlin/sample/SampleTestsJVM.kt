@@ -1,6 +1,5 @@
 package sample
 
-import sample.utils.hello
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
