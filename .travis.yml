@@ -36,11 +36,17 @@ before_install:
       make
       sudo make install
       cd ..
+
+      wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+      sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.1.97-xenial.list http://packages.lunarg.com/vulkan/1.1.97/lunarg-vulkan-1.1.97-xenial.list
+      sudo apt update
+      sudo apt install lunarg-vulkan-sdk
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew update
       brew install glfw --HEAD
+      brew cask install apenngrace/vulkan/vulkan-sdk
     fi
 
 script:
