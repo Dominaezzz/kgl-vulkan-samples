@@ -209,6 +209,8 @@ class TriangleApplication : BaseApplication() {
     override fun close() {
         device.waitIdle()
 
+        onDestroySwapchain()
+
         renderPass.close()
         pipelineLayout.close()
         fragShaderModule.close()

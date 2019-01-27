@@ -41,7 +41,7 @@ abstract class BaseApplication : Closeable {
     protected lateinit var swapchainImageViews: List<ImageView>
 
     init {
-        window = Window(WIDTH, HEIGHT, "Sample!") {
+        window = Window(WIDTH, HEIGHT, "Sample!", null, null) {
             clientApi = ClientApi.None
             // resizable = false
         }
