@@ -8,10 +8,10 @@ pluginManagement {
     }
 }
 
-enableFeaturePreview('GRADLE_METADATA')
+enableFeaturePreview("GRADLE_METADATA")
 
-rootProject.name = 'kgl-vulkan-samples'
+rootProject.name = "kgl-vulkan-samples"
 
-include "utils"
-include "triangle"
-include "buffers"
+include("utils")
+include("triangle")
+include("buffers")
