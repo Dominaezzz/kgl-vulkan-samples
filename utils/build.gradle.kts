@@ -1,13 +1,14 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.gradle.internal.os.OperatingSystem
 
 plugins {
     kotlin("multiplatform")
 }
 
 kotlin {
-    val os = org.gradle.internal.os.OperatingSystem.current()
+    val os = OperatingSystem.current()
 
-    val kglVersion = "0.1.5-dev-3"
+    val kglVersion = "0.1.5"
     val lwjglVersion = "3.2.1"
     val lwjglNatives = when {
         os.isWindows -> "natives-windows"

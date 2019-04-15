@@ -10,7 +10,6 @@ Inspired by examples from [Sascha Willems](https://github.com/SaschaWillems/Vulk
 
 ## Building
 ### Windows
-- `pacman -S mingw-w64-x86_64-glfw`
 - [Vulkan SDK](https://vulkan.lunarg.com/sdk/home).
 ### Linux
 - `sudo apt install glfw3`

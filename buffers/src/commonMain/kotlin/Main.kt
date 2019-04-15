@@ -8,10 +8,7 @@ import com.kgl.vulkan.unions.ClearColorF
 import com.kgl.vulkan.utils.VkFlag
 import com.kgl.vulkan.utils.contains
 import com.kgl.vulkan.utils.or
-import kotlinx.io.core.ByteOrder
-import kotlinx.io.core.buildPacket
-import kotlinx.io.core.use
-import kotlinx.io.core.writeFully
+import kotlinx.io.core.*
 import sample.utils.BaseApplication
 import sample.utils.readAllBytes
 
@@ -135,13 +132,12 @@ class TriangleApplication : BaseApplication() {
         stagingBuffer(vertices.size.toULong() * 4u * (2u + 3u)) { stagingBuffer ->
             val data = stagingBuffer.memory!!.map(0u, stagingBuffer.size)
 
-            data.byteOrder = ByteOrder.nativeOrder() // I'm not sure if this has to be here because of a bug.
             for (vertex in vertices) {
-                data.writeFloat(vertex.pos.x)
-                data.writeFloat(vertex.pos.y)
-                data.writeFloat(vertex.color.x)
-                data.writeFloat(vertex.color.y)
-                data.writeFloat(vertex.color.z)
+                data.writeFloat(vertex.pos.x, ByteOrder.nativeOrder())
+                data.writeFloat(vertex.pos.y, ByteOrder.nativeOrder())
+                data.writeFloat(vertex.color.x, ByteOrder.nativeOrder())
+                data.writeFloat(vertex.color.y, ByteOrder.nativeOrder())
+                data.writeFloat(vertex.color.z, ByteOrder.nativeOrder())
             }
             stagingBuffer.memory!!.unmap()
 
@@ -165,8 +161,10 @@ class TriangleApplication : BaseApplication() {
         stagingBuffer(indices.size.toULong() * UShort.SIZE_BYTES.toUInt()) { stagingBuffer ->
             val data = stagingBuffer.memory!!.map(0u, stagingBuffer.size)
 
-            data.byteOrder = ByteOrder.nativeOrder() // I'm not sure if this has to be here because of a bug.
-            data.writeFully(indices.asShortArray())
+            when (ByteOrder.nativeOrder()) {
+                ByteOrder.BIG_ENDIAN -> data.writeFully(indices.asShortArray())
+                ByteOrder.LITTLE_ENDIAN -> data.writeFullyLittleEndian(indices.asShortArray())
+            }
             stagingBuffer.memory!!.unmap()
 
             val cmdBuf = commandPool.allocate(CommandBufferLevel.PRIMARY, 1U).single()

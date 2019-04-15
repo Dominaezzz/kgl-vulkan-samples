@@ -71,11 +71,13 @@ abstract class BaseApplication : Closeable {
             }
         }
 
-        callback = instance.createDebugUtilsMessengerEXT(
-            DebugUtilsMessageTypeEXT.GENERAL or DebugUtilsMessageTypeEXT.PERFORMANCE or DebugUtilsMessageTypeEXT.VALIDATION,
-            DebugUtilsMessageSeverityEXT.VERBOSE or DebugUtilsMessageSeverityEXT.WARNING or DebugUtilsMessageSeverityEXT.INFO or DebugUtilsMessageSeverityEXT.ERROR
-        ) { _, _, data ->
-            // println("Validation layer: ${data.pMessage}")
+        callback = instance.createDebugUtilsMessengerEXT {
+            messageType = DebugUtilsMessageTypeEXT.GENERAL or DebugUtilsMessageTypeEXT.PERFORMANCE or DebugUtilsMessageTypeEXT.VALIDATION
+            messageSeverity = DebugUtilsMessageSeverityEXT.VERBOSE or DebugUtilsMessageSeverityEXT.WARNING or DebugUtilsMessageSeverityEXT.INFO or DebugUtilsMessageSeverityEXT.ERROR
+
+            userCallback { _, _, _ ->
+                // println("Validation layer: ${data.pMessage}")
+            }
         }
     }
     init {

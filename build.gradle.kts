@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
-    kotlin("multiplatform") version "1.3.20" apply false
+    kotlin("multiplatform") version "1.3.30" apply false
 }
 
 repositories {
