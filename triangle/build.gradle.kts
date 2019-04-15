@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     kotlin("multiplatform")
 }
@@ -21,7 +23,15 @@ kotlin {
             }
         }
     }
-    configure(listOf(mingwX64("mingw"), linuxX64("linux"), macosX64("macos"))) {
+
+    val os = OperatingSystem.current()!!
+
+    when {
+        os.isWindows -> mingwX64("mingw")
+        os.isLinux -> linuxX64("linux")
+        os.isMacOsX -> macosX64("macos")
+        else -> TODO()
+    }.apply {
         binaries {
             executable {
                 runTask!!.apply {
