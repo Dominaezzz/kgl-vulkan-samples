@@ -1,9 +1,6 @@
-import com.kgl.core.Flag
-import com.kgl.glfw.Glfw.init
 import com.kgl.vulkan.Vk
 import com.kgl.vulkan.enums.*
 import com.kgl.vulkan.handles.*
-import com.kgl.vulkan.structs.PhysicalDeviceMemoryProperties
 import com.kgl.vulkan.unions.ClearColorF
 import com.kgl.vulkan.utils.VkFlag
 import com.kgl.vulkan.utils.contains
@@ -129,9 +126,7 @@ class TriangleApplication : BaseApplication() {
         }
         indexBuffer.bindMemory(indexBufferMemory, 0u)
 
-        stagingBuffer(vertices.size.toULong() * 4u * (2u + 3u)) { stagingBuffer ->
-            val data = stagingBuffer.memory!!.map(0u, stagingBuffer.size)
-
+        stagingBuffer(vertices.size.toULong() * 4u * (2u + 3u)) { stagingBuffer, data ->
             for (vertex in vertices) {
                 data.writeFloat(vertex.pos.x, ByteOrder.nativeOrder())
                 data.writeFloat(vertex.pos.y, ByteOrder.nativeOrder())
@@ -139,7 +134,6 @@ class TriangleApplication : BaseApplication() {
                 data.writeFloat(vertex.color.y, ByteOrder.nativeOrder())
                 data.writeFloat(vertex.color.z, ByteOrder.nativeOrder())
             }
-            stagingBuffer.memory!!.unmap()
 
             val cmdBuf = commandPool.allocate(CommandBufferLevel.PRIMARY, 1U).single()
             with(cmdBuf) {
@@ -158,14 +152,11 @@ class TriangleApplication : BaseApplication() {
             cmdBuf.close()
         }
 
-        stagingBuffer(indices.size.toULong() * UShort.SIZE_BYTES.toUInt()) { stagingBuffer ->
-            val data = stagingBuffer.memory!!.map(0u, stagingBuffer.size)
-
+        stagingBuffer(indices.size.toULong() * UShort.SIZE_BYTES.toUInt()) { stagingBuffer, data ->
             when (ByteOrder.nativeOrder()) {
                 ByteOrder.BIG_ENDIAN -> data.writeFully(indices.asShortArray())
                 ByteOrder.LITTLE_ENDIAN -> data.writeFullyLittleEndian(indices.asShortArray())
             }
-            stagingBuffer.memory!!.unmap()
 
             val cmdBuf = commandPool.allocate(CommandBufferLevel.PRIMARY, 1U).single()
             with(cmdBuf) {
@@ -187,13 +178,13 @@ class TriangleApplication : BaseApplication() {
         onRecreateSwapchain(swapchain)
     }
 
-    private inline fun stagingBuffer(size: ULong, block: (Buffer) -> Unit) {
+    private inline fun stagingBuffer(size: ULong, block: (Buffer, IoBuffer) -> Unit) {
         val stagingBuffer = device.createBuffer {
             this.size = size
             usage = BufferUsage.TRANSFER_SRC
             sharingMode = SharingMode.EXCLUSIVE
         }
-        val stagingBufferMemory = device.allocateMemory {
+        val memory = device.allocateMemory {
             val memRequirements = stagingBuffer.memoryRequirements
 
             allocationSize = memRequirements.size
@@ -202,12 +193,15 @@ class TriangleApplication : BaseApplication() {
                 MemoryProperty.HOST_VISIBLE or MemoryProperty.HOST_COHERENT
             )
         }
-        stagingBuffer.bindMemory(stagingBufferMemory, 0UL)
+        stagingBuffer.bindMemory(memory, 0UL)
 
-        block(stagingBuffer)
-
-        stagingBuffer.close()
-        stagingBufferMemory.close()
+        try {
+            block(stagingBuffer, memory.map(0u, memory.size))
+        } finally {
+            memory.unmap()
+            stagingBuffer.close()
+            memory.close()
+        }
     }
 
     private fun findMemoryType(typeFilter: UInt, properties: VkFlag<MemoryProperty>): UInt {
