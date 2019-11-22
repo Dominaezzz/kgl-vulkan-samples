@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/Dominaezzz/kgl-vulkan-samples.svg?branch=master)](https://travis-ci.com/Dominaezzz/kgl-vulkan-samples)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/Dominaezzz/kgl-vulkan-samples?branch=master&svg=true)](https://ci.appveyor.com/project/Dominaezzz/kgl-vulkan-samples)
-[![Build Status](https://dev.azure.com/dominicfischer7/kgl/_apis/build/status/Dominaezzz.kgl-vulkan-samples?branchName=master)](https://dev.azure.com/dominicfischer7/kgl/_build/latest?definitionId=2&branchName=master)
+[![](https://github.com/Dominaezzz/kgl-vulkan-samples/workflows/Build/badge.svg)](https://github.com/Dominaezzz/kgl-vulkan-samples/actions)
 
 A collection of open source samples for [Vulkan®](https://www.khronos.org/vulkan/) written using the help of [kgl](https://github.com/Dominaezzz/kgl).
 Inspired by examples from [Sascha Willems](https://github.com/SaschaWillems/Vulkan) and [vulkan-tutorial](https://vulkan-tutorial.com/).

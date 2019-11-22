@@ -1,0 +1,46 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    name: 'Build'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, macos-latest, windows-latest]
+    steps:
+      - name: 'Install GLFW dependencies'
+        run: sudo apt install libvulkan-dev doxygen xorg-dev libglu1-mesa-dev
+        if: matrix.os == 'ubuntu-16.04'
+
+      - name: 'Build GLFW from source'
+        run: |
+          git clone https://github.com/glfw/glfw.git
+          cd glfw
+          cmake .
+          make
+          sudo make install
+          cd ..
+        if: matrix.os == 'ubuntu-16.04'
+
+      - name: 'Install GLFW'
+        run: brew install glfw --HEAD
+        if: matrix.os == 'macos-latest'
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+
+      - name: 'Clone Repo Vulkan Samples'
+        uses: actions/checkout@v1
+
+      - name: 'Compile KGL'
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: 'assemble --stacktrace'
+
+      - name: 'Test KGL Vulkan Samples'
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: 'check --stacktrace'
