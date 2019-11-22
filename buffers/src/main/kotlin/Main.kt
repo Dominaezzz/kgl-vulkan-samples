@@ -1,7 +1,6 @@
 import com.kgl.vulkan.Vk
 import com.kgl.vulkan.enums.*
 import com.kgl.vulkan.handles.*
-import com.kgl.vulkan.unions.ClearColorF
 import com.kgl.vulkan.utils.VkFlag
 import com.kgl.vulkan.utils.contains
 import com.kgl.vulkan.utils.or
@@ -320,7 +319,12 @@ class TriangleApplication : BaseApplication() {
             with(commandBuffer) {
                 begin { flags = CommandBufferUsage.SIMULTANEOUS_USE }
 
-                beginRenderPass(renderPass, swapchainFramebuffers[index], listOf(ClearColorF(0f, 0f, 0f, 1f)), SubpassContents.INLINE) {
+                beginRenderPass(renderPass, swapchainFramebuffers[index], SubpassContents.INLINE) {
+                    clearValues {
+                        clearValue {
+                            color(0f, 0f, 0f, 1f)
+                        }
+                    }
                     renderArea {
                         offset(0, 0)
                         extent(swapchainWidth, swapchainHeight)

@@ -2,19 +2,11 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    kotlin("multiplatform") version "1.3.30" apply false
-}
-
-repositories {
-    maven(url = "https://dl.bintray.com/dominaezzz/kotlin-native")
-
-    mavenLocal()
-    jcenter()
-    mavenCentral()
+    kotlin("multiplatform") version "1.3.60" apply false
 }
 
 val os = OperatingSystem.current()!!
-val kglVersion = "0.1.5"
+val kglVersion = "0.1.8-dev-9"
 val lwjglVersion = "3.2.1"
 val lwjglNatives = when {
     os.isWindows -> "natives-windows"
@@ -28,7 +20,7 @@ project(":utils") {
 
     configure<KotlinMultiplatformExtension> {
         sourceSets {
-            val commonMain by getting {
+            "commonMain" {
                 dependencies {
                     implementation(kotlin("stdlib-common"))
                     api("com.kgl:kgl-glfw:$kglVersion")
@@ -36,7 +28,7 @@ project(":utils") {
                     api("com.kgl:kgl-vulkan:$kglVersion")
                 }
             }
-            val commonTest by getting {
+            "commonTest" {
                 dependencies {
                     implementation(kotlin("test-common"))
                     implementation(kotlin("test-annotations-common"))
@@ -46,14 +38,14 @@ project(":utils") {
 
         jvm {
             compilations {
-                val main by getting {
+                "main" {
                     defaultSourceSet.dependencies {
                         implementation(kotlin("stdlib-jdk8"))
                         api("org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives")
                         api("org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives")
                     }
                 }
-                val test by getting {
+                "test" {
                     defaultSourceSet.dependencies {
                         implementation(kotlin("test"))
                         implementation(kotlin("test-junit"))
@@ -62,19 +54,19 @@ project(":utils") {
             }
         }
         when {
-            os.isWindows -> mingwX64("mingw")
-            os.isLinux -> linuxX64("linux")
-            os.isMacOsX -> macosX64("macos")
+            os.isWindows -> mingwX64()
+            os.isLinux -> linuxX64()
+            os.isMacOsX -> macosX64()
             else -> TODO()
         }.apply {
             compilations {
-                val main by getting {
+                "main" {
                     defaultSourceSet {
                         kotlin.srcDir("src/nativeMain/kotlin")
                         resources.srcDir("src/nativeMain/resources")
                     }
                 }
-                val test by getting {
+                "test" {
                     defaultSourceSet {
                         kotlin.srcDir("src/nativeTest/kotlin")
                         resources.srcDir("src/nativeTest/resources")
@@ -90,7 +82,7 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
 
     val compileShaders by tasks.registering {
         doLast {
-            fileTree("src/commonMain/resources/shaders").matching {
+            fileTree("src/main/resources/shaders").matching {
                 include("**/*.vert")
                 include("**/*.frag")
             }
@@ -102,9 +94,12 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
         }
     }
 
-    configure<KotlinMultiplatformExtension>  {
+    configure<KotlinMultiplatformExtension> {
         sourceSets {
-            val commonMain by getting {
+            "commonMain" {
+                kotlin.srcDir("src/main/kotlin")
+                resources.srcDir("src/main/resources")
+
                 dependencies {
                     implementation(project(":utils"))
                     implementation(kotlin("stdlib-common"))
@@ -113,8 +108,8 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
         }
 
         jvm {
-            val main by compilations.getting {
-                defaultSourceSet {
+            compilations {
+                "main" {
                     dependencies {
                         implementation(kotlin("stdlib-jdk8"))
                     }
@@ -123,9 +118,9 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
         }
 
         when {
-            os.isWindows -> mingwX64("mingw")
-            os.isLinux -> linuxX64("linux")
-            os.isMacOsX -> macosX64("macos")
+            os.isWindows -> mingwX64()
+            os.isLinux -> linuxX64()
+            os.isMacOsX -> macosX64()
             else -> TODO()
         }.apply {
             binaries {
@@ -133,7 +128,7 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
                     runTask!!.apply {
                         dependsOn(compileShaders)
                         args("")
-                        workingDir("src/commonMain/resources")
+                        workingDir("src/main/resources")
                     }
                 }
             }
@@ -143,7 +138,7 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
             dependsOn(compileShaders)
 
             main = "MainKt"
-            workingDir = project.file("src/commonMain/resources")
+            workingDir = project.file("src/main/resources")
 
             val compilation = jvm().compilations["main"]
 
@@ -154,9 +149,8 @@ configure(listOf(project(":triangle"), project(":buffers"))) {
 
 subprojects {
     repositories {
-        maven(url = "https://dl.bintray.com/dominaezzz/kotlin-native")
+        maven("https://dl.bintray.com/dominaezzz/kotlin-native")
 
-        mavenLocal()
         jcenter()
         mavenCentral()
     }
