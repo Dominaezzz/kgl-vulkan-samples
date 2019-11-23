@@ -32,10 +32,10 @@ jobs:
         with:
           java-version: 8
 
-      - name: 'Clone Repo Vulkan Samples'
+      - name: 'Clone Repo'
         uses: actions/checkout@v1
 
-      - name: 'Compile KGL'
+      - name: 'Compile KGL Vulkan Samples'
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: 'assemble --stacktrace'

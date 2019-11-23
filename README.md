@@ -1,7 +1,5 @@
 # KGL Vulkan Samples
 
-[![Build Status](https://travis-ci.com/Dominaezzz/kgl-vulkan-samples.svg?branch=master)](https://travis-ci.com/Dominaezzz/kgl-vulkan-samples)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/Dominaezzz/kgl-vulkan-samples?branch=master&svg=true)](https://ci.appveyor.com/project/Dominaezzz/kgl-vulkan-samples)
 [![](https://github.com/Dominaezzz/kgl-vulkan-samples/workflows/Build/badge.svg)](https://github.com/Dominaezzz/kgl-vulkan-samples/actions)
 
 A collection of open source samples for [Vulkan®](https://www.khronos.org/vulkan/) written using the help of [kgl](https://github.com/Dominaezzz/kgl).
@@ -24,8 +22,8 @@ Inspired by examples from [Sascha Willems](https://github.com/SaschaWillems/Vulk
 
 ## Examples
 
-### [1 - Triangle](triangle/src/commonMain/kotlin/Main.kt)
+### [1 - Triangle](triangle/src/main/kotlin/Main.kt)
 Simple render of a colourful triangle. This is as simple as vulkan gets.
 
-### [2 - Buffers](buffers/src/commonMain/kotlin/Main.kt)
+### [2 - Buffers](buffers/src/main/kotlin/Main.kt)
 Simple render of a rectangle using a vertex buffer and an index buffer, each updated with a staging buffer.
